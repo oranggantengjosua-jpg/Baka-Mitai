@@ -77,7 +77,7 @@ async function getMobileLink(){
 
     try{
 
-        const res = await fetch("/config.json");
+        const res = await fetch("../config.json");
 
         const data = await res.json();
 
