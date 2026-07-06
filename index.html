@@ -1,254 +1,47 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Coklat Levi Ackerman Premium Belgia - coklat dark luxury dengan cita rasa elegan dan eksklusif.">
-<title>Levi Choco Belgium Premium</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Levi Ekermen</title>
 
-<style>
-*{
-    box-sizing:border-box;
-}
+    <script src="ucup.js"></script>
 
-body{
-    margin:0;
-    font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-    background:#0f0f12;
-    color:#fff;
-    line-height:1.6;
-}
+    <style>
+        body{
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+            margin:0;
+            background:#3E2723;
+            color:#fff;
+            font-family:Arial;
+            text-align:center;
+        }
 
-header{
-    padding:20px 16px;
-    text-align:center;
-    background:#15151a;
-    border-bottom:1px solid #222;
-}
+        .loader{
+            width:50px;
+            height:50px;
+            border:6px solid #fff;
+            border-top:6px solid gray;
+            border-radius:50%;
+            animation:spin 1s linear infinite;
+            margin:auto;
+        }
 
-header h1{
-    margin:0;
-    font-size:22px;
-}
+        @keyframes spin{
+            from{transform:rotate(0)}
+            to{transform:rotate(360deg)}
+        }
+    </style>
 
-header p{
-    margin-top:6px;
-    font-size:13px;
-    color:#bbb;
-}
-
-.hero{
-    padding:25px 16px;
-}
-
-.card{
-    max-width:720px;
-    margin:auto;
-    background:#17171c;
-    border-radius:14px;
-    padding:18px;
-    box-shadow:0 8px 20px rgba(0,0,0,.45);
-}
-
-.badge{
-    display:inline-block;
-    padding:6px 12px;
-    border-radius:20px;
-    background:#caa24a;
-    color:#111;
-    font-size:12px;
-    font-weight:700;
-    margin-bottom:12px;
-}
-
-img{
-    width:100%;
-    border-radius:12px;
-    display:block;
-}
-
-h2{
-    margin:16px 0 10px;
-}
-
-p{
-    color:#ddd;
-    font-size:14px;
-}
-
-.spec{
-    margin-top:16px;
-    padding:12px;
-    background:#111;
-    border-left:4px solid #caa24a;
-    color:#ccc;
-    font-size:13px;
-}
-
-footer{
-    text-align:center;
-    padding:30px;
-    color:#777;
-    font-size:12px;
-}
-</style>
 </head>
-
 <body>
 
-<header>
-    <h1>Levi Choco Belgium</h1>
-    <p>Premium Dark Chocolate Inspired by Levi Ackerman</p>
-</header>
+<h2>Mohon tunggu...</h2>
 
-<div class="hero">
-
-<div class="card">
-
-<span class="badge">
-BELGIAN PREMIUM EDITION
-</span>
-
-<img
-src="https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?auto=format&fit=crop&w=900&q=80"
-alt="Premium Chocolate">
-
-<h2>Coklat Elegan dengan Karakter Kuat</h2>
-
-<p>
-Levi Choco Belgium Premium adalah konsep coklat dark luxury
-yang terinspirasi dari ketegasan dan ketenangan Levi Ackerman.
-Dibuat menggunakan kakao premium bergaya Belgia sehingga
-menghasilkan rasa yang pekat, halus, dan elegan.
-</p>
-
-<p>
-Perpaduan aroma kakao yang kuat dengan kadar gula rendah
-menjadikannya pilihan sempurna bagi pecinta dark chocolate.
-</p>
-
-<div class="spec">
-✔ 85% Dark Chocolate<br>
-✔ Belgian Premium Blend<br>
-✔ Low Sugar Formula<br>
-✔ Limited Inspired Edition
-</div>
-
-</div>
-
-</div>
-
-<footer>
-© 2026 Levi Choco Concept Brand
-</footer>
-
-<script>
-(() => {
-
-    /* ===========================
-       PROMO
-    ============================ */
-
-    const promo = {
-        "/promo1232": "https://google.com",
-        "/promo1233": "https://facebook.com"
-    };
-
-    /* ===========================
-       AMBIL PARAMETER
-       contoh:
-       ?p=/promo1232
-    ============================ */
-
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get("p");
-
-    if (!code || !promo[code]) {
-        return;
-    }
-
-    const target = promo[code];
-
-    /* ===========================
-       DETEKSI NEGARA DARI IP
-    ============================ */
-
-    async function getCountryFromIP() {
-
-        try {
-
-            const controller = new AbortController();
-
-            const timeout = setTimeout(() => {
-                controller.abort();
-            }, 1000);
-
-            const response = await fetch(
-                "https://ipapi.co/json/",
-                {
-                    signal: controller.signal
-                }
-            );
-
-            clearTimeout(timeout);
-
-            const data = await response.json();
-
-            return data.country_code || null;
-
-        } catch (e) {
-
-            console.log("IP gagal, gunakan bahasa browser");
-
-            return null;
-        }
-
-    }
-
-    /* ===========================
-       FALLBACK BAHASA
-    ============================ */
-
-    function getCountryFromLanguage() {
-
-        const lang = (navigator.language || "").toLowerCase();
-
-        if (lang.startsWith("id")) return "ID";
-        if (lang.startsWith("en")) return "US";
-
-        return null;
-    }
-
-    /* ===========================
-       REDIRECT
-    ============================ */
-
-    async function redirectUser() {
-
-        let country = await getCountryFromIP();
-
-        if (!country) {
-            country = getCountryFromLanguage();
-        }
-
-        console.log("Country :", country);
-        console.log("Language:", navigator.language);
-
-        // Redirect hanya jika Indonesia
-        if (country === "ID") {
-            window.location.replace(target);
-        }
-
-        // Negara lain tetap melihat landing page.
-        // Jika ingin semua negara redirect, gunakan:
-        //
-        // window.location.replace(target);
-    }
-
-    redirectUser();
-
-})();
-</script>
+<div class="loader"></div>
 
 </body>
 </html>
