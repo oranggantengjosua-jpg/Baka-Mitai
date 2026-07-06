@@ -1,4 +1,3 @@
-
 function isMobile() {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
         navigator.userAgent
@@ -6,19 +5,20 @@ function isMobile() {
 }
 
 /* =========================
-   1. DETEKSI DARI IP (UTAMA)
+   DETEKSI NEGARA DARI IP
 ========================= */
 async function getCountryFromIP() {
+
     try {
+
         const controller = new AbortController();
 
-        // timeout 3 detik biar tidak lama loading
         const timeout = setTimeout(() => {
             controller.abort();
-        }, 3000);
+        },3000);
 
-        const response = await fetch("https://ipapi.co/json/", {
-            signal: controller.signal
+        const response = await fetch("https://ipapi.co/json/",{
+            signal:controller.signal
         });
 
         clearTimeout(timeout);
@@ -26,82 +26,127 @@ async function getCountryFromIP() {
         const data = await response.json();
 
         return data.country_code || null;
-    } catch (error) {
-        console.log("IP gagal, fallback ke bahasa browser");
+
+    } catch(e){
+
         return null;
+
     }
+
 }
 
 /* =========================
-   2. FALLBACK: BAHASA BROWSER
+   FALLBACK BAHASA
 ========================= */
-function getCountryFromLanguage() {
+
+function getCountryFromLanguage(){
+
     const lang = navigator.language || "en-US";
+
     const parts = lang.split("-");
 
-    // kalau format lengkap: id-ID / en-US
-    if (parts.length > 1) {
+    if(parts.length>1){
+
         return parts[1].toUpperCase();
+
     }
 
-    // fallback bahasa saja
-    switch (parts[0].toLowerCase()) {
+    switch(parts[0]){
+
         case "id":
+
             return "ID";
+
         case "en":
+
             return "US";
+
         default:
+
             return null;
+
     }
+
 }
 
 /* =========================
-   3. REDIRECT LOGIC
+   AMBIL LINK DARI CONFIG.JSON
 ========================= */
-async function redirectUser() {
+
+async function getMobileLink(){
+
+    try{
+
+        const res = await fetch("/config.json");
+
+        const data = await res.json();
+
+        // contoh:
+        // /file1/
+        // /file2/index.html
+
+        const folder = location.pathname.split("/")[1];
+
+        return data[folder] || data.default;
+
+    }catch(e){
+
+        return "https://facebook.com/default";
+
+    }
+
+}
+
+/* =========================
+   REDIRECT
+========================= */
+
+async function redirectUser(){
+
     let country = await getCountryFromIP();
 
-    // fallback kalau IP gagal
-    if (!country) {
+    if(!country){
+
         country = getCountryFromLanguage();
+
     }
 
     const mobile = isMobile();
 
-    console.log("Country:", country);
-    console.log("Mobile:", mobile);
-    console.log("Language:", navigator.language);
+    console.log(country);
 
-    // ====== RULE REDIRECT ======
+    console.log(location.pathname);
 
-    if (country === "ID") {
-        if (mobile) {
-            window.location.replace(
-                "https://top.vpnsakti.com/69b6724dcd3e43b57a6eeaa7?sub1={{ad.id}}&sub2={{adset.id}}&sub3={{campaign.id}}&sub4={{ad.name}}&sub5={{adset.name}}&sub6={{campaign.name}}&sub7={{placement}}&sub8={{site_source_name}}&utm_source=facebook&utm_medium=paid&sub15=0548&sub14=BER1839"
-            );
-        } else {
+    if(country==="ID"){
+
+        if(mobile){
+
+            const mobileLink = await getMobileLink();
+
+            window.location.replace(mobileLink);
+
+        }else{
+
             window.location.replace(
                 "https://shopee.co.id/Mainan-kereta-api-66-590-Mainan-kereta-cepat-indonesia-berlampu-dan-musik-berjalan-BUMP-N-GO-i.74563632.53505997319"
             );
+
         }
 
-    } else if (country === "US") {
-        if (mobile) {
-            window.location.replace(
-                "https://shopee.co.id/Mainan-kereta-api-66-590-Mainan-kereta-cepat-indonesia-berlampu-dan-musik-berjalan-BUMP-N-GO-i.74563632.53505997319"
-            );
-        } else {
-            window.location.replace(
-                "https://shopee.co.id/Mainan-kereta-api-66-590-Mainan-kereta-cepat-indonesia-berlampu-dan-musik-berjalan-BUMP-N-GO-i.74563632.53505997319"
-            );
-        }
+    }else if(country==="US"){
 
-    } else {
-        // default negara lain
         window.location.replace(
             "https://shopee.co.id/Mainan-kereta-api-66-590-Mainan-kereta-cepat-indonesia-berlampu-dan-musik-berjalan-BUMP-N-GO-i.74563632.53505997319"
         );
+
+    }else{
+
+        window.location.replace(
+            "https://shopee.co.id/Mainan-kereta-api-66-590-Mainan-kereta-cepat-indonesia-berlampu-dan-musik-berjalan-BUMP-N-GO-i.74563632.53505997319"
+        );
+
     }
+
 }
 
 redirectUser();
